@@ -1,12 +1,20 @@
+#include "src/game.h"
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
 
-int main()
-{
-    std::cout << "SFML Works!" << std::endl;
-    return 0;
+int main() {
+
+  // Init sRand
+  std::srand(static_cast<unsigned int>(time(NULL)));
+
+  // Init Game Class
+  Game game;
+
+  // GameLoop
+  while (game.isRunning()) {
+    game.update();
+    game.render();
+  }
+
+  // EndOfApplication
+  return 0;
 }
