@@ -1,4 +1,3 @@
-
 #include "game.h"
 
 void Game::initVariables() {
@@ -18,6 +17,21 @@ void Game::initEnemies() {
   enemy.setFillColor(sf::Color(255, 0, 0, 255));
 }
 
+void Game::initFonts() {
+  if (!font.loadFromFile("assets/fonts/astonpoliz.ttf")) {
+    std::cout << "Error :: Game :: Init Font :: Failed to load font!"
+              << std::endl;
+  }
+}
+
+void Game::initText() {
+  uiText.setFont(font);
+  uiText.setPosition(20, 20);
+  uiText.setCharacterSize(24);
+  uiText.setFillColor(sf::Color(255, 0, 0, 255));
+  uiText.setString("TEXT");
+}
+
 void Game::initWindow() {
   window = new sf::RenderWindow(sf::VideoMode(1600, 900, 32U), title,
                                 sf::Style::Titlebar | sf::Style::Close,
@@ -29,6 +43,8 @@ Game::Game() {
   initVariables();
   initWindow();
   initEnemies();
+  initFonts();
+  initText();
 }
 
 Game::~Game() { delete window; }
@@ -52,9 +68,34 @@ void Game::spawnEnemies() {
       static_cast<float>(
           rand() % static_cast<int>(window->getSize().x - enemy.getSize().x)),
       static_cast<float>(enemy.getSize().y));
-  enemy.setFillColor(sf::Color(rand() % static_cast<int>(255),
-                               rand() % static_cast<int>(255),
-                               rand() % static_cast<int>(255), 255));
+  int type = rand() % 5;
+  switch (type) {
+  case 0:
+    enemy.setFillColor(sf::Color::Red);
+    enemy.setSize(sf::Vector2f(15.0f, 15.0f));
+    break;
+  case 1:
+    enemy.setFillColor(sf::Color::Green);
+    enemy.setSize(sf::Vector2f(25.0f, 25.0f));
+    break;
+  case 2:
+    enemy.setFillColor(sf::Color::Blue);
+    enemy.setSize(sf::Vector2f(35.0f, 35.0f));
+    break;
+  case 3:
+    enemy.setFillColor(sf::Color::Cyan);
+    enemy.setSize(sf::Vector2f(45.0f, 45.0f));
+    break;
+  case 4:
+    enemy.setFillColor(sf::Color::Magenta);
+    enemy.setSize(sf::Vector2f(50.0f, 50.0f));
+    break;
+  default:
+    enemy.setFillColor(sf::Color::Yellow);
+    enemy.setSize(sf::Vector2f(65.0f, 65.0f));
+    break;
+  }
+
   enemies.push_back(enemy);
 }
 
@@ -88,9 +129,22 @@ void Game::updateEnemies() {
         bool deleted = false;
         for (size_t i = 0; i < enemies.size() && deleted == false; i++) {
           if (enemies[i].getGlobalBounds().contains(mousePosView)) {
+
+            if (enemies[i].getFillColor() == sf::Color::Red) {
+              points += 10;
+              health += 1;
+            }
+            if (enemies[i].getFillColor() == sf::Color::Green)
+              points += 10;
+            if (enemies[i].getFillColor() == sf::Color::Blue)
+              points += 7;
+            if (enemies[i].getFillColor() == sf::Color::Cyan)
+              points += 5;
+            if (enemies[i].getFillColor() == sf::Color::Magenta)
+              points += 3;
+
             deleted = true;
             enemies.erase(enemies.begin() + i);
-            points += 10;
           }
         }
       }
@@ -100,11 +154,21 @@ void Game::updateEnemies() {
   }
 }
 
+void Game::updateText() {
+  std::stringstream ss;
+
+  ss << "Points : " << points << "\n"
+     << "Health : " << health << std::endl;
+  uiText.setString(ss.str());
+}
+
 void Game::renderEnemies() {
   for (sf::RectangleShape &e : enemies) {
     window->draw(e);
   }
 }
+
+void Game::renderText() { window->draw(uiText); }
 
 void Game::displayGameOver() {}
 
@@ -137,6 +201,7 @@ void Game::render() {
 
   // Draw New Frame
   renderEnemies();
+  renderText();
 
   // Display the New Frame
   window->display();
@@ -144,6 +209,7 @@ void Game::render() {
 
 void Game::update() {
   pollEvents();
+  updateText();
   if (!endGame) {
     updateMousePosition();
     updateEnemies();

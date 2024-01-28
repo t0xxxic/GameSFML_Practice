@@ -6,6 +6,7 @@
 #include <SFML/Window.hpp>
 #include <ctime>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 class Game {
@@ -18,6 +19,12 @@ private:
   // MousePosition
   sf::Vector2i mousePosWindow;
   sf::Vector2f mousePosView;
+
+  // Resources
+  sf::Font font;
+
+  // Text
+  sf::Text uiText;
 
   // Game Objects
   std::vector<sf::RectangleShape> enemies;
@@ -36,6 +43,8 @@ private:
   void initWindow();
   void initVariables();
   void initEnemies();
+  void initFonts();
+  void initText();
 
 public:
   // Const/Dest
@@ -49,12 +58,14 @@ public:
   // Functions
   void spawnEnemies();
   void updateEnemies();
-  void renderEnemies();
+  void updateText();
   void displayGameOver();
 
   void pollEvents();
   void updateMousePosition();
 
   void render();
+  void renderEnemies();
+  void renderText();
   void update();
 };
