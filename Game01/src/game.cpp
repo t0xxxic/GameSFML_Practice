@@ -114,7 +114,7 @@ void Game::updateEnemies() {
 
   // Move The Enemies
   for (int i = 0; i < enemies.size(); i++) {
-    enemies[i].move(0.f, 1.f);
+    enemies[i].move(0.f, 0.7f);
 
     // Enemy deletes on off-screen
     if (enemies[i].getPosition().y > window->getSize().y) {
